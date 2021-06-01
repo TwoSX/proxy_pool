@@ -50,12 +50,18 @@ PROXY_FETCHER = [
     "freeProxy03",
     # "freeProxy04",
     "freeProxy05",
-    "freeProxy06",
+    # "freeProxy06",
     "freeProxy07",
     "freeProxy08",
     "freeProxy09",
     "freeProxy13",
-    "freeProxy14"
+    "freeProxy14",
+    'freeProxyCustom2',
+    'freeProxyCustom3',
+    # 'freeProxyCustom4',
+    'freeProxyCustom5',
+    'freeProxyCustom6',
+    'freeProxyCustom7',
 ]
 
 # ############# proxy validator #################
@@ -86,3 +92,7 @@ POOL_SIZE_MIN = 20
 # Otherwise it will detect the timezone from the system automatically.
 
 TIMEZONE = "Asia/Shanghai"
+
+# 设置 Basic authentication，为空字符串则表示不启动验证
+AUTH_USERNAME = 'proxy'
+AUTH_PASSWORD = 'proxy123'

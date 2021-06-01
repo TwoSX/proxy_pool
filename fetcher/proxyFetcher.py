@@ -121,7 +121,7 @@ class ProxyFetcher(object):
     @staticmethod
     def freeProxy06(page=2):
         """
-        极速代理 https://www.superfastip.com/
+        极速代理 https://www.superfastip.com/  无法使用
         :return:
         """
         url = "https://api.superfastip.com/ip/freeip?page={page}"
@@ -167,7 +167,7 @@ class ProxyFetcher(object):
     @staticmethod
     def freeProxy09(page_count=1):
         """
-        http://ip.jiangxianli.com/
+        http://ip.jiangxianliq.com/
         免费代理库
         :return:
         """
@@ -250,7 +250,102 @@ class ProxyFetcher(object):
             for ip in ips:
                 yield ip.strip()
 
+    # @staticmethod
+    # def freeProxyCustom1(page=3):
+    #     """
+    #     http://free-proxy.cz/en/proxylist/country/all/https/ping/all
+    #     Fresh Proxy List | Free-Proxy.cz
+    #     :return:
+    #     """
+    #     url = 'http://free-proxy.cz/en/proxylist/country/all/https/ping/all'
+    #     html_tree = WebRequest().get(url).tree
+    #     for index, tr in enumerate(html_tree.xpath("//table//tr")):
+    #         if index == 0:
+    #             continue
+    #         print(tr)
+    #         print(":".join(tr.xpath("./td/text()")[0:2]).strip())
 
+    @staticmethod
+    def freeProxyCustom2(page=4):
+        """
+        https://www.7yip.cn/free/
+        齐云代理
+        :return:
+        """
+        url = "https://www.7yip.cn/free/?page={page}"
+        for i in range(page):
+            page_url = url.format(page=i + 1)
+            try:
+                html_tree = WebRequest().get(page_url).tree
+                for index, tr in enumerate(html_tree.xpath("//table//tr")):
+                    if index == 0:
+                        continue
+                    yield ":".join(tr.xpath("./td/text()")[0:2]).strip()
+            except Exception as e:
+                print(e)
+
+    @staticmethod
+    def freeProxyCustom3(page=8):
+        """
+        https://www.7yip.cn/free/
+        齐云代理
+        :return:
+        """
+        url = "http://www.kxdaili.com/dailiip/1/{page}.html"
+        for i in range(page):
+            page_url = url.format(page=i + 1)
+            try:
+                html_tree = WebRequest().get(page_url).tree
+                for index, tr in enumerate(html_tree.xpath("//table//tr")):
+                    if index == 0:
+                        continue
+                    yield ":".join(tr.xpath("./td/text()")[0:2]).strip()
+            except Exception as e:
+                print(e)
+    @staticmethod
+    def freeProxyCustom4():
+        """
+        https://free-proxy-list.net/anonymous-proxy.html
+        Free Proxy List
+        :return:
+        """
+        url = "https://free-proxy-list.net/anonymous-proxy.html"
+        html_tree = WebRequest().get(url).tree
+        textarea = html_tree.xpath('//*[@id="raw"]/div/div/div[2]/textarea')[0]
+        return textarea.text.splitlines()[3:]
+
+    @staticmethod
+    def freeProxyCustom5():
+        """
+        https://github.com/clarketm/proxy-list
+        Free Proxy List
+        :return:
+        """
+        url = "https://cdn.jsdelivr.net/gh/clarketm/proxy-list/proxy-list-raw.txt"
+        return WebRequest().get(url).text.splitlines()
+
+    @staticmethod
+    def freeProxyCustom6():
+        """
+        https://github.com/TheSpeedX/PROXY-List
+        Free Proxy List
+        :return:
+        """
+        url = "https://cdn.jsdelivr.net/gh/TheSpeedX/PROXY-List/http.txt"
+        return WebRequest().get(url).text.splitlines()
+
+    @staticmethod
+    def freeProxyCustom7():
+        """
+        https://github.com/clarketm/proxy-list
+        Free Proxy List
+        :return:
+        """
+        url = "https://cdn.jsdelivr.net/gh/scidam/proxy-list/proxy.json"
+        for item in WebRequest().get(url).json['proxies']:
+            yield item['ip'] + ':' + item['port']
+
+# //*[@id="raw"]/div/div/div[2]/textarea
 if __name__ == '__main__':
     p = ProxyFetcher()
     for _ in p.freeProxy13():

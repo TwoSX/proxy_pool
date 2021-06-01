@@ -18,6 +18,8 @@ __author__ = 'JHao'
 import platform
 from werkzeug.wrappers import Response
 from flask import Flask, jsonify, request
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from util.six import iteritems
 from helper.proxy import Proxy
@@ -27,6 +29,18 @@ from handler.configHandler import ConfigHandler
 app = Flask(__name__)
 conf = ConfigHandler()
 proxy_handler = ProxyHandler()
+
+auth = HTTPBasicAuth()
+
+users = {
+    conf.authUsername: generate_password_hash(conf.authPassword)
+}
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users and \
+            check_password_hash(users.get(username), password):
+        return username
 
 
 class JsonResponse(Response):
@@ -56,6 +70,7 @@ def index():
 
 
 @app.route('/get/')
+@auth.login_required
 def get():
     https = request.args.get("type", "").lower() == 'https'
     proxy = proxy_handler.get(https)
@@ -63,6 +78,7 @@ def get():
 
 
 @app.route('/pop/')
+@auth.login_required
 def pop():
     https = request.args.get("type", "").lower() == 'https'
     proxy = proxy_handler.pop(https)
@@ -70,12 +86,14 @@ def pop():
 
 
 @app.route('/refresh/')
+@auth.login_required
 def refresh():
     # TODO refresh会有守护程序定时执行，由api直接调用性能较差，暂不使用
     return 'success'
 
 
 @app.route('/all/')
+@auth.login_required
 def getAll():
     https = request.args.get("type", "").lower() == 'https'
     proxies = proxy_handler.getAll(https)
@@ -83,6 +101,7 @@ def getAll():
 
 
 @app.route('/delete/', methods=['GET'])
+@auth.login_required
 def delete():
     proxy = request.args.get('proxy')
     status = proxy_handler.delete(Proxy(proxy))
@@ -90,6 +109,7 @@ def delete():
 
 
 @app.route('/count/')
+@auth.login_required
 def getCount():
     status = proxy_handler.getCount()
     return status

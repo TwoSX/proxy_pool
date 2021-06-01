@@ -77,3 +77,10 @@ class ConfigHandler(withMetaclass(Singleton)):
     def timezone(self):
         return os.getenv("TIMEZONE", setting.TIMEZONE)
 
+    @LazyProperty
+    def authUsername(self):
+        return os.getenv("AUTH_USERNAME", setting.AUTH_USERNAME)
+
+    @LazyProperty
+    def authPassword(self):
+        return os.getenv("AUTH_PASSWORD", setting.AUTH_PASSWORD)
